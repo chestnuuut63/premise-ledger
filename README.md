@@ -202,7 +202,7 @@ MIT，见 [LICENSE](LICENSE)。仓库只分发 skill 本体；配套的 A1 学�
   author = {premise-ledger contributors},
   year   = {2026},
   note   = {华东师范大学数学科学学院，AI 工具与技能构建 期末项目},
-  url    = {https://github.com/<your-name>/premise-ledger}
+  url    = {https://github.com/chestnuuut63/premise-ledger}
 }
 ```
 
