@@ -1,0 +1,621 @@
+{
+  "dataset": "C:\\Users\\lizi2\\WorkBuddy\\2026-10-08-15-42-51\\premise-ledger\\dataset\\dialogues.json",
+  "dialogues": 10,
+  "total_plants": 13,
+  "arms": {
+    "A": {
+      "arm": "A",
+      "label": "A 纯文本",
+      "detected": 2,
+      "planted": 13,
+      "false_alarms": 15,
+      "recall": 15.384615384615385,
+      "precision": 11.764705882352942,
+      "per_type": {
+        "orphan_claim": {
+          "planted": 2,
+          "hit": 2,
+          "recall": 100.0
+        },
+        "orphan_input": {
+          "planted": 2,
+          "hit": 0,
+          "recall": 0.0
+        },
+        "phantom_ref": {
+          "planted": 1,
+          "hit": 0,
+          "recall": 0.0
+        },
+        "circular": {
+          "planted": 2,
+          "hit": 0,
+          "recall": 0.0
+        },
+        "contamination": {
+          "planted": 3,
+          "hit": 0,
+          "recall": 0.0
+        },
+        "drift": {
+          "planted": 2,
+          "hit": 0,
+          "recall": 0.0
+        },
+        "export_gate": {
+          "planted": 1,
+          "hit": 0,
+          "recall": 0.0
+        }
+      },
+      "missed": [
+        {
+          "dialogue": "D01",
+          "type": "drift",
+          "ids": [
+            "A2",
+            "A3"
+          ]
+        },
+        {
+          "dialogue": "D01",
+          "type": "orphan_input",
+          "ids": [
+            "C3"
+          ]
+        },
+        {
+          "dialogue": "D02",
+          "type": "contamination",
+          "ids": [
+            "C1",
+            "A2"
+          ]
+        },
+        {
+          "dialogue": "D04",
+          "type": "circular",
+          "ids": [
+            "C1",
+            "C3"
+          ]
+        },
+        {
+          "dialogue": "D05",
+          "type": "phantom_ref",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D06",
+          "type": "drift",
+          "ids": [
+            "A1",
+            "A2"
+          ]
+        },
+        {
+          "dialogue": "D07",
+          "type": "orphan_input",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D08",
+          "type": "contamination",
+          "ids": [
+            "C1",
+            "A2"
+          ]
+        },
+        {
+          "dialogue": "D08",
+          "type": "export_gate",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D09",
+          "type": "circular",
+          "ids": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "dialogue": "D10",
+          "type": "contamination",
+          "ids": [
+            "C1",
+            "A2"
+          ]
+        }
+      ],
+      "false_alarm_list": [
+        {
+          "dialogue": "D01",
+          "type": "orphan_claim",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D01",
+          "type": "orphan_claim",
+          "ids": [
+            "C2"
+          ]
+        },
+        {
+          "dialogue": "D01",
+          "type": "orphan_claim",
+          "ids": [
+            "C3"
+          ]
+        },
+        {
+          "dialogue": "D02",
+          "type": "orphan_claim",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D03",
+          "type": "orphan_claim",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D04",
+          "type": "orphan_claim",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D04",
+          "type": "orphan_claim",
+          "ids": [
+            "C2"
+          ]
+        },
+        {
+          "dialogue": "D04",
+          "type": "orphan_claim",
+          "ids": [
+            "C3"
+          ]
+        },
+        {
+          "dialogue": "D05",
+          "type": "orphan_claim",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D06",
+          "type": "orphan_claim",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D07",
+          "type": "orphan_claim",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D08",
+          "type": "orphan_claim",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D09",
+          "type": "orphan_claim",
+          "ids": [
+            "C2"
+          ]
+        },
+        {
+          "dialogue": "D09",
+          "type": "orphan_claim",
+          "ids": [
+            "C3"
+          ]
+        },
+        {
+          "dialogue": "D10",
+          "type": "orphan_claim",
+          "ids": [
+            "C1"
+          ]
+        }
+      ],
+      "details": [
+        {
+          "dialogue": "D01",
+          "planted": 2,
+          "hit": 0,
+          "false_alarms": 3
+        },
+        {
+          "dialogue": "D02",
+          "planted": 1,
+          "hit": 0,
+          "false_alarms": 1
+        },
+        {
+          "dialogue": "D03",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 1
+        },
+        {
+          "dialogue": "D04",
+          "planted": 1,
+          "hit": 0,
+          "false_alarms": 3
+        },
+        {
+          "dialogue": "D05",
+          "planted": 1,
+          "hit": 0,
+          "false_alarms": 1
+        },
+        {
+          "dialogue": "D06",
+          "planted": 1,
+          "hit": 0,
+          "false_alarms": 1
+        },
+        {
+          "dialogue": "D07",
+          "planted": 1,
+          "hit": 0,
+          "false_alarms": 1
+        },
+        {
+          "dialogue": "D08",
+          "planted": 2,
+          "hit": 0,
+          "false_alarms": 1
+        },
+        {
+          "dialogue": "D09",
+          "planted": 2,
+          "hit": 1,
+          "false_alarms": 2
+        },
+        {
+          "dialogue": "D10",
+          "planted": 1,
+          "hit": 0,
+          "false_alarms": 1
+        }
+      ]
+    },
+    "B": {
+      "arm": "B",
+      "label": "B 内联声明",
+      "detected": 8,
+      "planted": 13,
+      "false_alarms": 0,
+      "recall": 61.53846153846154,
+      "precision": 100.0,
+      "per_type": {
+        "orphan_claim": {
+          "planted": 2,
+          "hit": 2,
+          "recall": 100.0
+        },
+        "orphan_input": {
+          "planted": 2,
+          "hit": 0,
+          "recall": 0.0
+        },
+        "phantom_ref": {
+          "planted": 1,
+          "hit": 1,
+          "recall": 100.0
+        },
+        "circular": {
+          "planted": 2,
+          "hit": 2,
+          "recall": 100.0
+        },
+        "contamination": {
+          "planted": 3,
+          "hit": 3,
+          "recall": 100.0
+        },
+        "drift": {
+          "planted": 2,
+          "hit": 0,
+          "recall": 0.0
+        },
+        "export_gate": {
+          "planted": 1,
+          "hit": 0,
+          "recall": 0.0
+        }
+      },
+      "missed": [
+        {
+          "dialogue": "D01",
+          "type": "drift",
+          "ids": [
+            "A2",
+            "A3"
+          ]
+        },
+        {
+          "dialogue": "D01",
+          "type": "orphan_input",
+          "ids": [
+            "C3"
+          ]
+        },
+        {
+          "dialogue": "D06",
+          "type": "drift",
+          "ids": [
+            "A1",
+            "A2"
+          ]
+        },
+        {
+          "dialogue": "D07",
+          "type": "orphan_input",
+          "ids": [
+            "C1"
+          ]
+        },
+        {
+          "dialogue": "D08",
+          "type": "export_gate",
+          "ids": [
+            "C1"
+          ]
+        }
+      ],
+      "false_alarm_list": [],
+      "details": [
+        {
+          "dialogue": "D01",
+          "planted": 2,
+          "hit": 0,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D02",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D03",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D04",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D05",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D06",
+          "planted": 1,
+          "hit": 0,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D07",
+          "planted": 1,
+          "hit": 0,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D08",
+          "planted": 2,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D09",
+          "planted": 2,
+          "hit": 2,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D10",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        }
+      ]
+    },
+    "C": {
+      "arm": "C",
+      "label": "C 完整账本",
+      "detected": 13,
+      "planted": 13,
+      "false_alarms": 0,
+      "recall": 100.0,
+      "precision": 100.0,
+      "per_type": {
+        "orphan_claim": {
+          "planted": 2,
+          "hit": 2,
+          "recall": 100.0
+        },
+        "orphan_input": {
+          "planted": 2,
+          "hit": 2,
+          "recall": 100.0
+        },
+        "phantom_ref": {
+          "planted": 1,
+          "hit": 1,
+          "recall": 100.0
+        },
+        "circular": {
+          "planted": 2,
+          "hit": 2,
+          "recall": 100.0
+        },
+        "contamination": {
+          "planted": 3,
+          "hit": 3,
+          "recall": 100.0
+        },
+        "drift": {
+          "planted": 2,
+          "hit": 2,
+          "recall": 100.0
+        },
+        "export_gate": {
+          "planted": 1,
+          "hit": 1,
+          "recall": 100.0
+        }
+      },
+      "missed": [],
+      "false_alarm_list": [],
+      "details": [
+        {
+          "dialogue": "D01",
+          "planted": 2,
+          "hit": 2,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D02",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D03",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D04",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D05",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D06",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D07",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D08",
+          "planted": 2,
+          "hit": 2,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D09",
+          "planted": 2,
+          "hit": 2,
+          "false_alarms": 0
+        },
+        {
+          "dialogue": "D10",
+          "planted": 1,
+          "hit": 1,
+          "false_alarms": 0
+        }
+      ]
+    }
+  },
+  "negative_control": {
+    "total_issues": 0,
+    "rows": [
+      {
+        "dialogue": "D01",
+        "issues": 0,
+        "types": []
+      },
+      {
+        "dialogue": "D02",
+        "issues": 0,
+        "types": []
+      },
+      {
+        "dialogue": "D03",
+        "issues": 0,
+        "types": []
+      },
+      {
+        "dialogue": "D04",
+        "issues": 0,
+        "types": []
+      },
+      {
+        "dialogue": "D05",
+        "issues": 0,
+        "types": []
+      },
+      {
+        "dialogue": "D06",
+        "issues": 0,
+        "types": []
+      },
+      {
+        "dialogue": "D07",
+        "issues": 0,
+        "types": []
+      },
+      {
+        "dialogue": "D08",
+        "issues": 0,
+        "types": []
+      },
+      {
+        "dialogue": "D09",
+        "issues": 0,
+        "types": []
+      },
+      {
+        "dialogue": "D10",
+        "issues": 0,
+        "types": []
+      }
+    ]
+  }
+}

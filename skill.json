@@ -1,0 +1,42 @@
+{
+  "name": "premise-ledger",
+  "version": "1.0.1",
+  "display_name": "前提-结论账本",
+  "summary": "为多轮对话中的每条结论登记它所依赖的前提；前提一撤，精确算出恰好哪几条结论作废。",
+  "entry": "SKILL.md",
+  "runtime": {
+    "language": "python",
+    "min_version": "3.8",
+    "dependencies": [],
+    "scripts": {
+      "core": "scripts/ledger.py",
+      "demo": "examples/demo.py",
+      "evaluate": "evaluate.py",
+      "make_sheet": "tools/make_sheet.py"
+    }
+  },
+  "commands": [
+    "new",
+    "add-premise",
+    "add-claim",
+    "verify",
+    "retract",
+    "check",
+    "cite",
+    "show",
+    "export"
+  ],
+  "exit_codes": {
+    "0": "通过 / 可交付 / 正常返回",
+    "1": "check 发现 error 级问题，不可交付",
+    "2": "输入非法或 id 不存在"
+  },
+  "artifacts": {
+    "schema": "schema.md",
+    "dataset": "dataset/dialogues.json",
+    "results": "results/eval_report.txt",
+    "self_eval": "docs/skill_self_eval.md",
+    "walkthrough": "docs/demo_walkthrough.md"
+  },
+  "license": "MIT"
+}

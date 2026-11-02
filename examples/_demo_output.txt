@@ -1,0 +1,732 @@
+内核：C:\Users\lizi2\WorkBuddy\2026-10-08-15-42-51\premise-ledger\scripts\ledger.py
+解释器：C:\Users\lizi2\.workbuddy\binaries\python\versions\3.13.12\python.exe
+
+========================================================================
+样例一 · 某市供水规模测算：登记 → 门禁 → 核验 → 撤回 → 级联
+========================================================================
+
+$ ledger new --task 某市供水规模测算
+{
+  "ok": true,
+  "ledger": "C:\\Users\\lizi2\\WorkBuddy\\2026-10-08-15-42-51\\premise-ledger\\examples\\_out\\demo1.json",
+  "task": "某市供水规模测算"
+}
+[exit=0]
+
+$ ledger add-premise --text 人均综合用水 150 L/(人·天) --symbol percapita --value 150 --unit L/(人·天) --conf 0.9 --src spec --turn 1
+{
+  "ok": true,
+  "id": "A1",
+  "kind": "premise",
+  "status": "unverified",
+  "hint": "引用它时写 A1"
+}
+[exit=0]
+
+$ ledger add-premise --text 常住人口 800 万 --symbol population --value 8000000 --unit 人 --conf 0.4 --src 用户口述 --turn 2
+{
+  "ok": true,
+  "id": "A2",
+  "kind": "premise",
+  "status": "unverified",
+  "hint": "引用它时写 A2"
+}
+[exit=0]
+
+$ ledger add-premise --text 管网漏损率 10% --symbol loss --value 0.1 --unit - --conf 0.6 --src estimate --turn 2
+{
+  "ok": true,
+  "id": "A3",
+  "kind": "premise",
+  "status": "unverified",
+  "hint": "引用它时写 A3"
+}
+[exit=0]
+
+$ ledger add-claim --text 日需水量 ≈120 万吨 --symbol demand --value 1200000 --unit 吨/天 --inputs percapita,population --turn 3
+{
+  "ok": true,
+  "id": "C1",
+  "kind": "claim",
+  "requires": [
+    "A1",
+    "A2"
+  ],
+  "alts": [],
+  "status": "degraded"
+}
+[exit=0]
+
+$ ledger add-claim --text 年供水量 ≈4.9 亿吨 --symbol supply --value 490000000 --unit 吨/年 --inputs demand,loss --turn 4 --exported
+{
+  "ok": true,
+  "id": "C2",
+  "kind": "claim",
+  "requires": [
+    "C1",
+    "A3"
+  ],
+  "alts": [],
+  "status": "degraded"
+}
+[exit=0]
+
+--- 交付前体检：应当被门禁拦下（A2 未核验）---
+
+$ ledger check
+{
+  "ok": false,
+  "task": "某市供水规模测算",
+  "issues": [
+    {
+      "type": "export_gate",
+      "label": "交付门禁",
+      "severity": "error",
+      "ids": [
+        "C2",
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "message": "C2 已标记对外输出，但上游 3 条前提未核实，或自身状态为 degraded，不允许交付。",
+      "fix": "先核验上游前提，或撤回对外输出标记。"
+    }
+  ],
+  "stats": {
+    "premises": 3,
+    "premises_verified": 0,
+    "claims": 2,
+    "claims_active": 0,
+    "claims_degraded": 2,
+    "claims_invalidated": 0
+  },
+  "exit_hint": "不可交付：存在 error 级问题"
+}
+[exit=1]
+
+--- 这张卡片就是 agent 可以引用的话 ---
+
+$ ledger cite --id C2
+{
+  "ok": true,
+  "id": "C2",
+  "state": "degraded",
+  "level": "降级可用",
+  "usable": true,
+  "via_alts": false,
+  "card": "[C2] 年供水量 ≈4.9 亿吨\n取值：490000000 吨/年\n状态：degraded　引用级别：降级可用\n依赖：A1、A2、A3、C1\n未核实前提：A1（人均综合用水 150 L/(人·天)）、A2（常住人口 800 万）、A3（管网漏损率 10%）\n注意：上游 A1、A2、A3 未核实，引用须注明置信度",
+  "deps": [
+    "A1",
+    "A2",
+    "A3",
+    "C1"
+  ],
+  "dead_deps": [],
+  "unverified_deps": [
+    "A1",
+    "A2",
+    "A3"
+  ]
+}
+[exit=0]
+
+--- 三条前提逐一核验之后，门禁应当放行 ---
+
+$ ledger verify --id A2 --evidence 《2025 统计年鉴》表 3-1 --turn 6
+{
+  "ok": true,
+  "id": "A2",
+  "status": "verified",
+  "conf": 1.0
+}
+[exit=0]
+
+$ ledger verify --id A1 --evidence 《室外给水设计标准》GB 50013 --turn 6
+{
+  "ok": true,
+  "id": "A1",
+  "status": "verified",
+  "conf": 1.0
+}
+[exit=0]
+
+$ ledger verify --id A3 --evidence 供水公司 2025 年漏损报告 --turn 7
+{
+  "ok": true,
+  "id": "A3",
+  "status": "verified",
+  "conf": 1.0
+}
+[exit=0]
+
+$ ledger check
+{
+  "ok": true,
+  "task": "某市供水规模测算",
+  "issues": [],
+  "stats": {
+    "premises": 3,
+    "premises_verified": 3,
+    "claims": 2,
+    "claims_active": 2,
+    "claims_degraded": 0,
+    "claims_invalidated": 0
+  },
+  "exit_hint": "可以交付"
+}
+[exit=0]
+
+--- 第 9 轮用户改了口径：A2 作废，看级联 ---
+
+$ ledger retract --id A2 --reason 人口口径改为常住半年以上 --turn 9
+{
+  "ok": true,
+  "retracted": "A2",
+  "reason": "人口口径改为常住半年以上",
+  "changed": [
+    {
+      "id": "C1",
+      "from": "active",
+      "to": "invalidated"
+    },
+    {
+      "id": "C2",
+      "from": "active",
+      "to": "invalidated"
+    }
+  ],
+  "unchanged": [],
+  "summary": "撤销 A2：2 条结论状态改变，0 条不受影响"
+}
+[exit=0]
+
+$ ledger check
+{
+  "ok": false,
+  "task": "某市供水规模测算",
+  "issues": [
+    {
+      "type": "contamination",
+      "label": "污染传播",
+      "severity": "error",
+      "ids": [
+        "C1",
+        "A2"
+      ],
+      "message": "C1 依赖的前提 A2 已失效，结论本身也已作废。",
+      "fix": "重新推导，或撤回该结论。"
+    },
+    {
+      "type": "contamination",
+      "label": "污染传播",
+      "severity": "error",
+      "ids": [
+        "C2",
+        "A2"
+      ],
+      "message": "C2 依赖的前提 A2 已失效，结论本身也已作废。",
+      "fix": "重新推导，或撤回该结论。"
+    },
+    {
+      "type": "export_gate",
+      "label": "交付门禁",
+      "severity": "error",
+      "ids": [
+        "C2",
+        "A2"
+      ],
+      "message": "C2 已标记对外输出，但上游 1 条前提未核实，或自身状态为 invalidated，不允许交付。",
+      "fix": "先核验上游前提，或撤回对外输出标记。"
+    }
+  ],
+  "stats": {
+    "premises": 3,
+    "premises_verified": 2,
+    "claims": 2,
+    "claims_active": 0,
+    "claims_degraded": 0,
+    "claims_invalidated": 2
+  },
+  "exit_hint": "不可交付：存在 error 级问题"
+}
+[exit=1]
+
+$ ledger export --format md
+{
+  "ok": true,
+  "format": "md",
+  "content": "| 编号 | 类型 | 陈述 | 取值 | 依赖 | 状态 |\n|---|---|---|---|---|---|\n| A1 | 前提 | 人均综合用水 150 L/(人·天) | 150 L/(人·天) |  | verified |\n| A2 | 前提 | 常住人口 800 万 | 8000000 人 |  | retracted |\n| A3 | 前提 | 管网漏损率 10% | 0.1 - |  | verified |\n| C1 | 结论 | 日需水量 ≈120 万吨 | 1200000 吨/天 | A1, A2 | invalidated |\n| C2 | 结论 | 年供水量 ≈4.9 亿吨 | 490000000 吨/年 | C1, A3 | invalidated |"
+}
+[exit=0]
+
+========================================================================
+样例二 · 有替代支撑时，同一个撤回不该把结论全杀死
+========================================================================
+
+$ ledger new --task 供水测算（含备用人口来源）
+{
+  "ok": true,
+  "ledger": "C:\\Users\\lizi2\\WorkBuddy\\2026-10-08-15-42-51\\premise-ledger\\examples\\_out\\demo2.json",
+  "task": "供水测算（含备用人口来源）"
+}
+[exit=0]
+
+$ ledger add-premise --text 人均综合用水 150 L/(人·天) --symbol percapita --value 150 --unit L/(人·天) --conf 0.9 --src spec --turn 1
+{
+  "ok": true,
+  "id": "A1",
+  "kind": "premise",
+  "status": "unverified",
+  "hint": "引用它时写 A1"
+}
+[exit=0]
+
+$ ledger add-premise --text 常住人口 800 万（口述） --symbol population --value 8000000 --unit 人 --conf 0.4 --src 用户口述 --turn 2
+{
+  "ok": true,
+  "id": "A2",
+  "kind": "premise",
+  "status": "unverified",
+  "hint": "引用它时写 A2"
+}
+[exit=0]
+
+$ ledger add-premise --text 物业实测服务人口 780 万 --symbol population_measured --value 7800000 --unit 人 --conf 0.9 --src measured --turn 5
+{
+  "ok": true,
+  "id": "A3",
+  "kind": "premise",
+  "status": "unverified",
+  "hint": "引用它时写 A3"
+}
+[exit=0]
+
+$ ledger add-premise --text 管网漏损率 10% --symbol loss --value 0.1 --unit - --conf 0.6 --src estimate --turn 2
+{
+  "ok": true,
+  "id": "A4",
+  "kind": "premise",
+  "status": "unverified",
+  "hint": "引用它时写 A4"
+}
+[exit=0]
+
+--- C1 的必需依赖是 A1+A2，但另有替代组 A1+A4 ---
+
+$ ledger add-claim --text 日需水量 ≈120 万吨 --symbol demand --value 1200000 --unit 吨/天 --inputs percapita,population --alts A1,A4 --turn 3
+{
+  "ok": true,
+  "id": "C1",
+  "kind": "claim",
+  "requires": [
+    "A1",
+    "A2"
+  ],
+  "alts": [
+    "A1",
+    "A4"
+  ],
+  "status": "degraded"
+}
+[exit=0]
+
+$ ledger add-claim --text 年供水量 ≈4.9 亿吨 --symbol supply --value 490000000 --unit 吨/年 --inputs demand,loss --turn 4
+{
+  "ok": true,
+  "id": "C2",
+  "kind": "claim",
+  "requires": [
+    "C1",
+    "A4"
+  ],
+  "alts": [],
+  "status": "degraded"
+}
+[exit=0]
+
+--- 四条前提全部核验：C1、C2 应当是 active ---
+
+$ ledger verify --id A1 --evidence 设计标准 --turn 5
+{
+  "ok": true,
+  "id": "A1",
+  "status": "verified",
+  "conf": 1.0
+}
+[exit=0]
+
+$ ledger verify --id A2 --evidence 统计年鉴 --turn 5
+{
+  "ok": true,
+  "id": "A2",
+  "status": "verified",
+  "conf": 1.0
+}
+[exit=0]
+
+$ ledger verify --id A3 --evidence 漏损报告 --turn 5
+{
+  "ok": true,
+  "id": "A3",
+  "status": "verified",
+  "conf": 1.0
+}
+[exit=0]
+
+$ ledger verify --id A4 --evidence 物业 2025 年度报表 --turn 5
+{
+  "ok": true,
+  "id": "A4",
+  "status": "verified",
+  "conf": 1.0
+}
+[exit=0]
+
+$ ledger check
+{
+  "ok": true,
+  "task": "供水测算（含备用人口来源）",
+  "issues": [],
+  "stats": {
+    "premises": 4,
+    "premises_verified": 4,
+    "claims": 2,
+    "claims_active": 2,
+    "claims_degraded": 0,
+    "claims_invalidated": 0
+  },
+  "exit_hint": "可以交付"
+}
+[exit=0]
+
+--- 撤回 A2：C1 走替代支撑降级存活，不被杀死 ---
+
+$ ledger retract --id A2 --reason 口述数据不可靠 --turn 7
+{
+  "ok": true,
+  "retracted": "A2",
+  "reason": "口述数据不可靠",
+  "changed": [
+    {
+      "id": "C1",
+      "from": "active",
+      "to": "degraded"
+    },
+    {
+      "id": "C2",
+      "from": "active",
+      "to": "degraded"
+    }
+  ],
+  "unchanged": [],
+  "summary": "撤销 A2：2 条结论状态改变，0 条不受影响"
+}
+[exit=0]
+
+$ ledger check
+{
+  "ok": true,
+  "task": "供水测算（含备用人口来源）",
+  "issues": [
+    {
+      "type": "contamination",
+      "label": "污染传播",
+      "severity": "warning",
+      "ids": [
+        "C1",
+        "A2"
+      ],
+      "message": "C1 依赖链上的 A2 已失效，现由替代支撑维持（状态 degraded）。",
+      "fix": "确认替代支撑确实成立；对外引用时须注明降级。"
+    },
+    {
+      "type": "contamination",
+      "label": "污染传播",
+      "severity": "warning",
+      "ids": [
+        "C2",
+        "A2"
+      ],
+      "message": "C2 依赖链上的 A2 已失效，现由替代支撑维持（状态 degraded）。",
+      "fix": "确认替代支撑确实成立；对外引用时须注明降级。"
+    }
+  ],
+  "stats": {
+    "premises": 4,
+    "premises_verified": 3,
+    "claims": 2,
+    "claims_active": 0,
+    "claims_degraded": 2,
+    "claims_invalidated": 0
+  },
+  "exit_hint": "可以交付"
+}
+[exit=0]
+
+$ ledger cite --id C2
+{
+  "ok": true,
+  "id": "C2",
+  "state": "degraded",
+  "level": "降级可用",
+  "usable": true,
+  "via_alts": false,
+  "card": "[C2] 年供水量 ≈4.9 亿吨\n取值：490000000 吨/年\n状态：degraded　引用级别：降级可用\n依赖：A1、A2、A4、C1\n已失效前提：A2（常住人口 800 万（口述））\n注意：依赖链上 A2 已失效，结论由替代支撑维持，引用须注明降级",
+  "deps": [
+    "A1",
+    "A2",
+    "A4",
+    "C1"
+  ],
+  "dead_deps": [
+    "A2"
+  ],
+  "unverified_deps": []
+}
+[exit=0]
+
+========================================================================
+样例三 · 把六类病全犯一遍，看 check 能不能一网打尽
+========================================================================
+
+$ ledger new --task 病态账本（测试用例）
+{
+  "ok": true,
+  "ledger": "C:\\Users\\lizi2\\WorkBuddy\\2026-10-08-15-42-51\\premise-ledger\\examples\\_out\\demo3.json",
+  "task": "病态账本（测试用例）"
+}
+[exit=0]
+
+$ ledger add-premise --text 常住人口 800 万 --symbol population --value 8000000 --unit 人 --turn 1
+{
+  "ok": true,
+  "id": "A1",
+  "kind": "premise",
+  "status": "unverified",
+  "hint": "引用它时写 A1"
+}
+[exit=0]
+
+$ ledger add-premise --text 常住人口 900 万 --symbol population --value 9000000 --unit 人 --turn 4
+{
+  "ok": true,
+  "id": "A2",
+  "kind": "premise",
+  "status": "unverified",
+  "hint": "引用它时写 A2"
+}
+[exit=0]
+
+$ ledger add-premise --text 漏损率 10% --symbol loss --value 0.1 --unit - --turn 2
+{
+  "ok": true,
+  "id": "A3",
+  "kind": "premise",
+  "status": "unverified",
+  "hint": "引用它时写 A3"
+}
+[exit=0]
+
+$ ledger add-claim --text 这个结论没有任何前提支撑
+{
+  "ok": true,
+  "id": "C1",
+  "kind": "claim",
+  "requires": [],
+  "alts": [],
+  "status": "invalidated"
+}
+[exit=0]
+
+$ ledger add-claim --text 用了一个没人提供的量 --inputs ghost_symbol
+{
+  "ok": true,
+  "id": "C2",
+  "kind": "claim",
+  "requires": [],
+  "alts": [],
+  "status": "invalidated",
+  "warning": "以下输入找不到提供者：ghost_symbol（孤儿输入）"
+}
+[exit=0]
+
+$ ledger add-claim --text 引用了不存在的条目 --depends A99
+{
+  "ok": true,
+  "id": "C3",
+  "kind": "claim",
+  "requires": [
+    "A99"
+  ],
+  "alts": [],
+  "status": "invalidated"
+}
+[exit=0]
+
+$ ledger add-claim --text 甲结论靠乙结论 --symbol cyc_a --depends C5
+{
+  "ok": true,
+  "id": "C4",
+  "kind": "claim",
+  "requires": [
+    "C5"
+  ],
+  "alts": [],
+  "status": "invalidated"
+}
+[exit=0]
+
+$ ledger add-claim --text 乙结论靠甲结论 --symbol cyc_b --depends C4
+{
+  "ok": true,
+  "id": "C5",
+  "kind": "claim",
+  "requires": [
+    "C4"
+  ],
+  "alts": [],
+  "status": "invalidated"
+}
+[exit=0]
+
+$ ledger add-claim --text 依赖漏损率的结论 --symbol with_loss --inputs loss
+{
+  "ok": true,
+  "id": "C6",
+  "kind": "claim",
+  "requires": [
+    "A3"
+  ],
+  "alts": [],
+  "status": "degraded"
+}
+[exit=0]
+
+--- 让一条前提失效，制造污染传播 ---
+
+$ ledger retract --id A3 --reason 数据源撤销 --turn 8
+{
+  "ok": true,
+  "retracted": "A3",
+  "reason": "数据源撤销",
+  "changed": [
+    {
+      "id": "C6",
+      "from": "degraded",
+      "to": "invalidated"
+    }
+  ],
+  "unchanged": [
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5"
+  ],
+  "summary": "撤销 A3：1 条结论状态改变，5 条不受影响"
+}
+[exit=0]
+
+--- 全量体检：应当同时抓到六类 ---
+
+$ ledger check
+{
+  "ok": false,
+  "task": "病态账本（测试用例）",
+  "issues": [
+    {
+      "type": "orphan_claim",
+      "label": "孤儿结论",
+      "severity": "error",
+      "ids": [
+        "C1"
+      ],
+      "message": "C1「这个结论没有任何前提支撑」没有任何依赖，是凭空生成的结论。",
+      "fix": "补上它依赖的前提：--depends A1,A2 或 --alts …"
+    },
+    {
+      "type": "orphan_claim",
+      "label": "孤儿结论",
+      "severity": "error",
+      "ids": [
+        "C2"
+      ],
+      "message": "C2「用了一个没人提供的量」没有任何依赖，是凭空生成的结论。",
+      "fix": "补上它依赖的前提：--depends A1,A2 或 --alts …"
+    },
+    {
+      "type": "orphan_input",
+      "label": "孤儿输入",
+      "severity": "error",
+      "ids": [
+        "C2"
+      ],
+      "message": "C2 用了「ghost_symbol」，但账本里没有任何节点提供这个量（静默前提）。",
+      "fix": "先登记一条带 --symbol ghost_symbol 的前提，或删掉这个输入。"
+    },
+    {
+      "type": "phantom_ref",
+      "label": "幽灵引用",
+      "severity": "error",
+      "ids": [
+        "C3"
+      ],
+      "message": "C3 引用了不存在的 A99。",
+      "fix": "检查编号；编号不会被复用，确认是否登记失败。"
+    },
+    {
+      "type": "circular",
+      "label": "循环论证",
+      "severity": "error",
+      "ids": [
+        "C4",
+        "C5",
+        "C4"
+      ],
+      "message": "依赖成环：C4 → C5 → C4，这是循环论证。",
+      "fix": "断掉其中一条边，或把被循环依赖的结论降为前提。"
+    },
+    {
+      "type": "contamination",
+      "label": "污染传播",
+      "severity": "error",
+      "ids": [
+        "C6",
+        "A3"
+      ],
+      "message": "C6 依赖的前提 A3 已失效，结论本身也已作废。",
+      "fix": "重新推导，或撤回该结论。"
+    },
+    {
+      "type": "drift",
+      "label": "前提漂移",
+      "severity": "error",
+      "ids": [
+        "A1",
+        "A2"
+      ],
+      "message": "「population」被赋予了 2 个不同取值或陈述（A1, A2），前提漂移。",
+      "fix": "保留一个权威取值，其余标记为历史或改名。"
+    }
+  ],
+  "stats": {
+    "premises": 3,
+    "premises_verified": 0,
+    "claims": 6,
+    "claims_active": 0,
+    "claims_degraded": 0,
+    "claims_invalidated": 6
+  },
+  "exit_hint": "不可交付：存在 error 级问题"
+}
+[exit=1]
+
+捕获到的病种：
+  命中  孤儿结论
+  命中  孤儿输入
+  命中  幽灵引用
+  命中  循环论证
+  命中  污染传播
+  命中  前提漂移
+
+全部样例执行完毕。

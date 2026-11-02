@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+*.pyo
+
+# 运行时生成的账本与临时输出（可由脚本重建）
+.ledger.json
+*_live.ledger.json
+*_scenario.ledger.json
+*_counter.ledger.json
+examples/_out/
+demo_scenario/_scenario_output.txt
+
+# A1 海报属于另一份作业交付物，不随 skill 分发
+poster/
+
+# 系统垃圾
+.DS_Store
+Thumbs.db
+*.log
