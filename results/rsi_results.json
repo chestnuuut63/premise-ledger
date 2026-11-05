@@ -1,0 +1,227 @@
+{
+  "budget": 100,
+  "fields": [
+    "deps",
+    "alts",
+    "symbol",
+    "inputs",
+    "unresolved",
+    "exported"
+  ],
+  "folds": [
+    {
+      "fold": "折 1",
+      "log": [
+        {
+          "round": 0,
+          "move": "起点（纯文本，不记任何字段）",
+          "genome": [],
+          "pub": 16.7,
+          "priv": 14.3,
+          "accepted": true,
+          "note": ""
+        },
+        {
+          "round": 1,
+          "move": "+依赖边",
+          "genome": [
+            "deps"
+          ],
+          "pub": 66.7,
+          "priv": 57.1,
+          "accepted": true,
+          "note": ""
+        },
+        {
+          "round": 2,
+          "move": "+符号表",
+          "genome": [
+            "deps",
+            "symbol"
+          ],
+          "pub": 83.3,
+          "priv": 71.4,
+          "accepted": true,
+          "note": ""
+        },
+        {
+          "round": 3,
+          "move": "+未解析输入",
+          "genome": [
+            "deps",
+            "symbol",
+            "unresolved"
+          ],
+          "pub": 100.0,
+          "priv": 85.7,
+          "accepted": true,
+          "note": ""
+        },
+        {
+          "round": 4,
+          "move": "+对外标记",
+          "genome": [
+            "deps",
+            "exported",
+            "symbol",
+            "unresolved"
+          ],
+          "pub": 100.0,
+          "priv": 100.0,
+          "accepted": true,
+          "note": ""
+        },
+        {
+          "round": 5,
+          "move": "+替代支撑边",
+          "genome": [
+            "alts",
+            "deps",
+            "exported",
+            "symbol",
+            "unresolved"
+          ],
+          "pub": 100.0,
+          "priv": 100.0,
+          "accepted": false,
+          "note": "提交的 3 个候选，私有分数均未超越现任者"
+        }
+      ],
+      "final": [
+        "deps",
+        "exported",
+        "symbol",
+        "unresolved"
+      ],
+      "pub": {
+        "genome": [
+          "deps",
+          "exported",
+          "symbol",
+          "unresolved"
+        ],
+        "tp": 6,
+        "fn": 0,
+        "fp": 0,
+        "total": 6,
+        "recall": 100.0,
+        "precision": 100.0,
+        "fitness": 100.0
+      },
+      "priv": {
+        "genome": [
+          "deps",
+          "exported",
+          "symbol",
+          "unresolved"
+        ],
+        "tp": 7,
+        "fn": 0,
+        "fp": 0,
+        "total": 7,
+        "recall": 100.0,
+        "precision": 100.0,
+        "fitness": 100.0
+      },
+      "spent": 47
+    },
+    {
+      "fold": "折 2",
+      "log": [
+        {
+          "round": 0,
+          "move": "起点（纯文本，不记任何字段）",
+          "genome": [],
+          "pub": 14.3,
+          "priv": 16.7,
+          "accepted": true,
+          "note": ""
+        },
+        {
+          "round": 1,
+          "move": "+依赖边",
+          "genome": [
+            "deps"
+          ],
+          "pub": 57.1,
+          "priv": 66.7,
+          "accepted": true,
+          "note": ""
+        },
+        {
+          "round": 2,
+          "move": "+符号表",
+          "genome": [
+            "deps",
+            "symbol"
+          ],
+          "pub": 71.4,
+          "priv": 83.3,
+          "accepted": true,
+          "note": ""
+        },
+        {
+          "round": 3,
+          "move": "+未解析输入",
+          "genome": [
+            "deps",
+            "symbol",
+            "unresolved"
+          ],
+          "pub": 85.7,
+          "priv": 100.0,
+          "accepted": true,
+          "note": ""
+        },
+        {
+          "round": 4,
+          "move": "+对外标记",
+          "genome": [
+            "deps",
+            "exported",
+            "symbol",
+            "unresolved"
+          ],
+          "pub": 100.0,
+          "priv": 100.0,
+          "accepted": false,
+          "note": "提交的 3 个候选，私有分数均未超越现任者"
+        }
+      ],
+      "final": [
+        "deps",
+        "symbol",
+        "unresolved"
+      ],
+      "pub": {
+        "genome": [
+          "deps",
+          "symbol",
+          "unresolved"
+        ],
+        "tp": 6,
+        "fn": 1,
+        "fp": 0,
+        "total": 7,
+        "recall": 85.7,
+        "precision": 100.0,
+        "fitness": 85.7
+      },
+      "priv": {
+        "genome": [
+          "deps",
+          "symbol",
+          "unresolved"
+        ],
+        "tp": 6,
+        "fn": 0,
+        "fp": 0,
+        "total": 6,
+        "recall": 100.0,
+        "precision": 100.0,
+        "fitness": 100.0
+      },
+      "spent": 38
+    }
+  ]
+}
