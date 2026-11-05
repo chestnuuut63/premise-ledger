@@ -79,6 +79,7 @@ class Ledger:
     def __init__(self, path):
         self.path = path
         self.data = self._load()
+        self.refresh_edges()
 
     # ---------- 持久化 ----------
 
@@ -116,12 +117,45 @@ class Ledger:
         return self.data["nodes"].get(nid)
 
     def resolve(self, symbol):
+        """按符号找提供者：优先仍有效的节点，其次编号最新的。
+
+        早先的写法返回遍历顺序里第一个匹配项，会引出两个问题：
+        一是前提被更正后（旧条目撤回、同符号新登记），新结论会重新连回
+        已撤回的旧节点；二是先登记结论、后补前提时，后补的前提永远接不上。
+        """
         if not symbol:
             return None
+        hits = [nid for nid, n in self.data["nodes"].items()
+                if n.get("symbol") == symbol]
+        if not hits:
+            return None
+        live = [nid for nid in hits if self.is_live(nid)]
+        pool = live or hits
+        return max(pool, key=lambda i: int(i[1:]) if i[1:].isdigit() else 0)
+
+    def refresh_edges(self):
+        """按 inputs 重新解析依赖边，并刷新未解析清单。
+
+        解析只在写入时做一次的话，事后补登的前提不会自动接上，孤儿输入
+        会一直误报。每次读取前重算，账本反映的才是"当前"的提供者。
+        """
+        touched = False
         for nid, n in self.data["nodes"].items():
-            if n.get("symbol") == symbol:
-                return nid
-        return None
+            if n["kind"] != "claim" or n.get("retracted"):
+                continue
+            left = []
+            for sym in n.get("inputs", []):
+                hit = self.resolve(sym)
+                if not hit:
+                    left.append(sym)
+                    continue
+                if hit != nid and hit not in n["requires"] and hit not in n["alts"]:
+                    n["requires"].append(hit)
+                    touched = True
+            if left != n.get("unresolved", []):
+                n["unresolved"] = left
+                touched = True
+        return touched
 
     def alive(self, nid, _stack=frozenset()):
         n = self.node(nid)
