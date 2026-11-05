@@ -109,9 +109,9 @@ premise-ledger/
 ├── examples/demo.py      三段样例：正常流程 / 精确级联 / 六类病全触发
 ├── demo_live/run_live.py 现场互动：29 句长对话 + 8 处埋伏 + 一键揭晓
 ├── demo_scenario/run_scenario.py  会话实例：烘焙店二店回本测算，9 轮实录（详见 docs/usage_scenario.md）
-├── docs/demo_walkthrough.md   demo 与评测的逐行导读（含答辩逐字稿）
+├── docs/demo_walkthrough.md   demo 与评测的逐行导读（含五分钟逐字稿）
+├── docs/poster_talk.md        对着 A1 海报的汇报稿：90 秒 / 5 分钟 / 8 分钟 + 追问应答
 ├── docs/skill_self_eval.md    七维自评报告：94.4/100 + 改进空间
-├── docs/usage_scenario.md     真实会话实录：9 轮烘焙店回本测算
 ├── docs/usage_scenario.md     真实会话实录：9 轮烘焙店回本测算
 └── results/              答案键、测评表、评测报告
 ```
